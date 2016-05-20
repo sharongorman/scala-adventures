@@ -78,9 +78,9 @@ object ErrorExercises {
   /**
     * Exercise 4:
     * Lets look up a list of agent ids.
-    * We want to get either a List[ErrorOr[String]]
+    * We want to get either a Vector[ErrorOr[String]]
     */
-  def findAgents(agentIds: List[Int]): List[ErrorOr[Agent]] =
+  def findAgents(agentIds: Vector[Int]): Vector[ErrorOr[Agent]] =
     agentIds.map(agentId => findAgent(agentId))
   // With syntactic sugar, this could also be written:
       //agentIds.map(findAgent(_))
@@ -91,12 +91,12 @@ object ErrorExercises {
   /**
     * Exercise 5:
     * Lets look up a list of agent ids.
-    * This time we either want a List of agents if they are all successful, or the
+    * This time we either want a Vector of agents if they are all successful, or the
     * first error message.
-    * Hint: investigate the "sequence" method.  This basically unwrapps and re-wraps a traversable (e.g. List) and an applicative (our ErrorOr).
+    * Hint: investigate the "sequence" method.  This basically unwrapps and re-wraps a traversable (e.g. Vector) and an applicative (our ErrorOr).
     */
 
-  def findAllAgents(agentIds: List[Int]): ErrorOr[List[Agent]] =
+  def findAllAgents(agentIds: Vector[Int]): ErrorOr[Vector[Agent]] =
      findAgents(agentIds).sequence[ErrorOr, Agent]
 
   /** Exercise 6:
@@ -104,7 +104,7 @@ object ErrorExercises {
     * This time we either want an error if one doesn't exist or a unit (i.e they exist)
     */
 
-  def checkAllAgents(agentIds: List[Int]): ErrorOr[Unit] = findAgents(agentIds).sequence_[ErrorOr, Agent]
+  def checkAllAgents(agentIds: Vector[Int]): ErrorOr[Unit] = findAgents(agentIds).sequence_[ErrorOr, Agent]
 
   /** Exercise 7:
     * Let look up a list of agent ids.
@@ -112,17 +112,17 @@ object ErrorExercises {
     * Hint: take a look at the "traverse" method, it is like doing a sequence, but for each element, it first applies a function that transfroms the element.
     */
 
-  def findAllAgentsNames(agentIds: List[Int]): ErrorOr[List[String]] = {
+  def findAllAgentsNames(agentIds: Vector[Int]): ErrorOr[Vector[String]] = {
     findAgents(agentIds).traverse[ErrorOr, String](maybeAgent => maybeAgent.map(_.name))
   }
 
   /**
     * Exercise 8:
     * Lets lookup a list of agents again.
-    * This time the result should be a List of all the errors, and a list of all the successfully found values.
+    * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
     */
 
-  def findSomeAgents(agentIds: List[Int]): (List[AppError], List[Agent]) = findAgents(agentIds).separate
+  def findSomeAgents(agentIds: Vector[Int]): (Vector[AppError], Vector[Agent]) = findAgents(agentIds).separate
 
   /**
     * Exercise 9:

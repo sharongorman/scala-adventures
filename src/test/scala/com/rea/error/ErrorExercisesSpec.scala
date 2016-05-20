@@ -45,51 +45,51 @@ class ErrorExercisesSpec extends Specification {
 
     "Exercise 4" should {
       "return agents" in {
-        findAgents(List(1,2)) must beEqualTo(List(\/-(agent1), \/-(agent2)))
+        findAgents(Vector(1,2)) must beEqualTo(Vector(\/-(agent1), \/-(agent2)))
       }
 
       "return an error if agent not found " in {
-        findAgents(List(0,2)) must beEqualTo(List(-\/(AppError("agent 0 not found")), \/-(agent2)))
+        findAgents(Vector(0,2)) must beEqualTo(Vector(-\/(AppError("agent 0 not found")), \/-(agent2)))
       }
 
     }
 
     "Exercise 5" should {
       "return agents" in {
-        findAllAgents(List(1,2)) must be_\/-(List(agent1, agent2))
+        findAllAgents(Vector(1,2)) must be_\/-(Vector(agent1, agent2))
       }
 
       "return an error if agent not found " in {
-        findAllAgents(List(0,2)) must be_-\/(AppError("agent 0 not found"))
+        findAllAgents(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
       }
     }
     "Exercise 6" should {
       "return unit if there are not missing agents" in {
-        checkAllAgents(List(1,2)) must be_\/-(())
+        checkAllAgents(Vector(1,2)) must be_\/-(())
       }
 
       "return an error if agent not found " in {
-        checkAllAgents(List(0,2)) must be_-\/(AppError("agent 0 not found"))
+        checkAllAgents(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
       }
     }
 
     "Exercise 7" should {
       "return unit if there are not missing agents" in {
-        findAllAgentsNames(List(1,2)) must be_\/-(List(agent1.name, agent2.name))
+        findAllAgentsNames(Vector(1,2)) must be_\/-(Vector(agent1.name, agent2.name))
       }
 
       "return an error if agent not found " in {
-        findAllAgentsNames(List(0,2)) must be_-\/(AppError("agent 0 not found"))
+        findAllAgentsNames(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
       }
     }
 
     "Exercise 8" should {
       "return agents" in {
-        findSomeAgents(List(1, 2)) must beEqualTo(Nil, List(agent1, agent2))
+        findSomeAgents(Vector(1, 2)) must beEqualTo(Nil, Vector(agent1, agent2))
       }
 
       "return an error if agent not found " in {
-        findSomeAgents(List(0, 2)) must beEqualTo(List(AppError("agent 0 not found")), List(agent2))
+        findSomeAgents(Vector(0, 2)) must beEqualTo(Vector(AppError("agent 0 not found")), Vector(agent2))
       }
     }
 
