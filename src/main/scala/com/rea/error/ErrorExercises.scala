@@ -31,10 +31,7 @@ object ErrorExercises {
 
   val agents = Map(1 -> Agent(1 , "Hocking Stuart"), 2 -> Agent(2, "Ellis Jones"))
 
-  def findAgent(agentId: Int): ErrorOr[Agent] = agents.get(agentId) match {
-    case None => -\/(AppError(s"agent $agentId not found"))
-    case Some(agent) => \/-(agent)
-  }
+  def findAgent(agentId: Int): ErrorOr[Agent] = ???
 
   /**
     * Exercise 2 :
@@ -42,7 +39,7 @@ object ErrorExercises {
     * For now lets pop it in a string s"The agent is ${agent.name}"
     */
 
-  def findAgentAnswer(agentId: Int) : ErrorOr[String] = findAgent(agentId).map(agent => s"The agent is ${agent.name}")
+  def findAgentAnswer(agentId: Int) : ErrorOr[String] = ???
   /**
     * Exercise 3 :
     * Lets look at what happens if we want to use the result of one lookup in another lookup
@@ -60,17 +57,12 @@ object ErrorExercises {
     17 -> Property(17, "A dream house from a non existant agent", 0)
   )
 
-  def findProperty(propertyId: Int) : ErrorOr[Property] = properties.get(propertyId) match {
-    case None => -\/(AppError(s"property $propertyId not found"))
-    case Some(property) => \/-(property)
-  }
+  def findProperty(propertyId: Int) : ErrorOr[Property] = ???
 
   /**
     * Then we can find the agent from the property id.
     */
-  def findPropertyAgent(propertyId: Int) : ErrorOr[Agent] = findProperty(propertyId).flatMap{ property =>
-    findAgent(property.agentId)
-  }
+  def findPropertyAgent(propertyId: Int) : ErrorOr[Agent] = ???
 
 
 
@@ -80,12 +72,7 @@ object ErrorExercises {
     * Lets look up a list of agent ids.
     * We want to get either a List[ErrorOr[String]]
     */
-  def findAgents(agentIds: List[Int]): List[ErrorOr[Agent]] =
-    agentIds.map(agentId => findAgent(agentId))
-  // With syntactic sugar, this could also be written:
-      //agentIds.map(findAgent(_))
-  // or even:
-      //agentIds.map(findAgent)
+  def findAgents(agentIds: List[Int]): List[ErrorOr[Agent]] = ???
 
 
   /**
@@ -96,15 +83,14 @@ object ErrorExercises {
     * Hint: investigate the "sequence" method.  This basically unwrapps and re-wraps a traversable (e.g. List) and an applicative (our ErrorOr).
     */
 
-  def findAllAgents(agentIds: List[Int]): ErrorOr[List[Agent]] =
-     findAgents(agentIds).sequence[ErrorOr, Agent]
+  def findAllAgents(agentIds: List[Int]): ErrorOr[List[Agent]] = ???
 
   /** Exercise 6:
     * Let check if a list of agent ids exist
     * This time we either want an error if one doesn't exist or a unit (i.e they exist)
     */
 
-  def checkAllAgents(agentIds: List[Int]): ErrorOr[Unit] = findAgents(agentIds).sequence_[ErrorOr, Agent]
+  def checkAllAgents(agentIds: List[Int]): ErrorOr[Unit] = ???
 
   /** Exercise 7:
     * Let look up a list of agent ids.
@@ -112,9 +98,7 @@ object ErrorExercises {
     * Hint: take a look at the "traverse" method, it is like doing a sequence, but for each element, it first applies a function that transfroms the element.
     */
 
-  def findAllAgentsNames(agentIds: List[Int]): ErrorOr[List[String]] = {
-    findAgents(agentIds).traverse[ErrorOr, String](maybeAgent => maybeAgent.map(_.name))
-  }
+  def findAllAgentsNames(agentIds: List[Int]): ErrorOr[List[String]] = ???
 
   /**
     * Exercise 8:
@@ -122,7 +106,7 @@ object ErrorExercises {
     * This time the result should be a List of all the errors, and a list of all the successfully found values.
     */
 
-  def findSomeAgents(agentIds: List[Int]): (List[AppError], List[Agent]) = findAgents(agentIds).separate
+  def findSomeAgents(agentIds: List[Int]): (List[AppError], List[Agent]) = ???
 
   /**
     * Exercise 9:
@@ -130,23 +114,14 @@ object ErrorExercises {
     * We should get the first error if they fail.
     * Hint, use a for comprehension
     */
-  def suggestAProperty(propertyId: Int, agentId: Int): ErrorOr[String] = {
-    for {
-      property <- findProperty(propertyId)
-      agent <- findAgent(agentId)
-    } yield s"Hey ${agent.name} how about selling ${property.description}"
-  }
+  def suggestAProperty(propertyId: Int, agentId: Int): ErrorOr[String] = ???
 
   /**
     * Exercise 10:
     * Try the above using apply2 method: Apply[F[_]].apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C]
     */
 
-  def suggesAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = {
-    def suggestString(agent: Agent, property: Property) = s"Hey ${agent.name} how about selling ${property.description}"
-
-    Apply[ErrorOr].apply2(findAgent(agentId), findProperty(propertyId))(suggestString)
-  }
+  def suggesAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = ???
 
 
 }
