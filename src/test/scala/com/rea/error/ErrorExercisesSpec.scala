@@ -107,6 +107,20 @@ class ErrorExercisesSpec extends Specification {
       }
     }
 
+    "Exercise 10" should {
+      "return a suggestion string " in {
+        suggestAProperty2(12, 1) must be_\/-(s"Hey ${agent1.name} how about selling A great house")
+      }
+
+      "return an error if agent not found " in {
+        suggestAProperty2(12, 0) must be_-\/(AppError("agent 0 not found"))
+      }
+
+      "return an error if property not found " in {
+        suggestAProperty2(0, 1) must be_-\/(AppError("property 0 not found"))
+      }
+    }
+
   }
 
   val agent1 = Agent(1 , "Hocking Stuart")

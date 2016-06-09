@@ -9,8 +9,8 @@ object ErrorExercises {
   case class AppError(message: String, throwable: Option[Throwable] = None)
 
   /**
-    * And lets define a paramaterized type.
-    * This will be the return type of any errors
+    * And lets define a paramaterized type "ErrorOr".
+    * We are going to use this to represent any return type, that could be an error.
    **/
   type ErrorOr[A] = AppError \/ A
 
@@ -27,6 +27,8 @@ object ErrorExercises {
     * Exercise 1 : implement findAgent.  It should find the agentId
     * in agents, and return it wrapped in an ErrorOr.
     * If the agentId is not there, it should return an AppError, wrapped in an ErrorOr
+    * For simplicity, our "agents repository" is simply a map of agentId -> agent.
+    * hint: Investigate the Map.get method.
     */
 
   val agents = Map(1 -> Agent(1 , "Hocking Stuart"), 2 -> Agent(2, "Ellis Jones"))
@@ -40,6 +42,7 @@ object ErrorExercises {
     * Exercise 2 :
     * Lets look at what happens if we want to use the result of this lookup.
     * For now lets pop it in a string s"The agent is ${agent.name}"
+    * hint: Our ErrorOr[A] is a Monad.  It has a map method: def map[B](g: A => B): (AppError \/ B)
     */
 
   def findAgentAnswer(agentId: Int) : ErrorOr[String] = findAgent(agentId).map(agent => s"The agent is ${agent.name}")
@@ -142,7 +145,7 @@ object ErrorExercises {
     * Try the above using apply2 method: Apply[F[_]].apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C]
     */
 
-  def suggesAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = {
+  def suggestAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = {
     def suggestString(agent: Agent, property: Property) = s"Hey ${agent.name} how about selling ${property.description}"
 
     Apply[ErrorOr].apply2(findAgent(agentId), findProperty(propertyId))(suggestString)
