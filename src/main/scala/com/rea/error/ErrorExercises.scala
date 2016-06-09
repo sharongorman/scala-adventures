@@ -9,8 +9,8 @@ object ErrorExercises {
   case class AppError(message: String, throwable: Option[Throwable] = None)
 
   /**
-    * And lets define a paramaterized type.
-    * This will be the return type of any errors
+    * And lets define a paramaterized type "ErrorOr".
+    * We are going to use this to represent any return type, that could be an error.
    **/
   type ErrorOr[A] = AppError \/ A
 
@@ -27,6 +27,8 @@ object ErrorExercises {
     * Exercise 1 : implement findAgent.  It should find the agentId
     * in agents, and return it wrapped in an ErrorOr.
     * If the agentId is not there, it should return an AppError, wrapped in an ErrorOr
+    * For simplicity, our "agents repository" is simply a map of agentId -> agent.
+    * hint: Investigate the Map.get method.
     */
 
   val agents = Map(1 -> Agent(1 , "Hocking Stuart"), 2 -> Agent(2, "Ellis Jones"))
@@ -37,6 +39,7 @@ object ErrorExercises {
     * Exercise 2 :
     * Lets look at what happens if we want to use the result of this lookup.
     * For now lets pop it in a string s"The agent is ${agent.name}"
+    * hint: Our ErrorOr[A] is a Monad.  It has a map method: def map[B](g: A => B): (AppError \/ B)
     */
 
   def findAgentAnswer(agentId: Int) : ErrorOr[String] = ???
@@ -70,27 +73,27 @@ object ErrorExercises {
   /**
     * Exercise 4:
     * Lets look up a list of agent ids.
-    * We want to get either a List[ErrorOr[String]]
+    * We want to get either a Vector[ErrorOr[String]]
     */
-  def findAgents(agentIds: List[Int]): List[ErrorOr[Agent]] = ???
+  def findAgents(agentIds: Vector[Int]): Vector[ErrorOr[Agent]] = ???
 
 
   /**
     * Exercise 5:
     * Lets look up a list of agent ids.
-    * This time we either want a List of agents if they are all successful, or the
+    * This time we either want a Vector of agents if they are all successful, or the
     * first error message.
-    * Hint: investigate the "sequence" method.  This basically unwrapps and re-wraps a traversable (e.g. List) and an applicative (our ErrorOr).
+    * Hint: investigate the "sequence" method.  This basically unwrapps and re-wraps a traversable (e.g. Vector) and an applicative (our ErrorOr).
     */
 
-  def findAllAgents(agentIds: List[Int]): ErrorOr[List[Agent]] = ???
+  def findAllAgents(agentIds: Vector[Int]): ErrorOr[Vector[Agent]] = ???
 
   /** Exercise 6:
     * Let check if a list of agent ids exist
     * This time we either want an error if one doesn't exist or a unit (i.e they exist)
     */
 
-  def checkAllAgents(agentIds: List[Int]): ErrorOr[Unit] = ???
+  def checkAllAgents(agentIds: Vector[Int]): ErrorOr[Unit] = ???
 
   /** Exercise 7:
     * Let look up a list of agent ids.
@@ -98,15 +101,15 @@ object ErrorExercises {
     * Hint: take a look at the "traverse" method, it is like doing a sequence, but for each element, it first applies a function that transfroms the element.
     */
 
-  def findAllAgentsNames(agentIds: List[Int]): ErrorOr[List[String]] = ???
+  def findAllAgentsNames(agentIds: Vector[Int]): ErrorOr[Vector[String]] = ???
 
   /**
     * Exercise 8:
     * Lets lookup a list of agents again.
-    * This time the result should be a List of all the errors, and a list of all the successfully found values.
+    * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
     */
 
-  def findSomeAgents(agentIds: List[Int]): (List[AppError], List[Agent]) = ???
+  def findSomeAgents(agentIds: Vector[Int]): (Vector[AppError], Vector[Agent]) = ???
 
   /**
     * Exercise 9:
@@ -121,7 +124,7 @@ object ErrorExercises {
     * Try the above using apply2 method: Apply[F[_]].apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C]
     */
 
-  def suggesAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = ???
+  def suggestAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = ???
 
 
 }
