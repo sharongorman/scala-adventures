@@ -116,7 +116,8 @@ object ErrorExercises {
     */
 
   def findAllAgentsNames(agentIds: Vector[Int]): ErrorOr[Vector[String]] = {
-    findAgents(agentIds).traverse[ErrorOr, String](maybeAgent => maybeAgent.map(_.name))
+    agentIds.traverse[ErrorOr, String](agentId => findAgent(agentId).map(_.name))
+//    findAgents(agentIds).traverse[ErrorOr, String](maybeAgent => maybeAgent.map(_.name))
   }
 
   /**
