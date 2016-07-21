@@ -19,7 +19,8 @@ val specs2Version = "3.6.6"
 
 libraryDependencies ++= Seq(
   "org.scalaz"                      %% "scalaz-core"                 % "7.1.6",
-  "org.specs2"                      %% "specs2-core"                 % specs2Version    % "test",
+  "io.argonaut"                     %% "argonaut"                    % "6.1",
+"org.specs2"                      %% "specs2-core"                 % specs2Version    % "test",
   "org.specs2"                      %% "specs2-matcher-extra"        % specs2Version    % "test"
 )
 
