@@ -70,19 +70,19 @@ object ArgonautExercises {
     * We start with a jEmptyObject and add fields to it.
     */
 
-  val myObject : Json = ???
+//  val myObject : Json = ???
 
 
   /** We need a couple of other argonaut methods in our tool kit to add optional fields
     * First the :=? field constructor:
     */
-    val myMaybeObject: Option[String] = None
-  val myMaybeField: Option[(String, Json)] = "option" :=? None[String]
+//    val myMaybeObject: Option[String] = None
+  //val myMaybeField: Option[(String, Json)] = "option" :=? None
 
   /** And now the ->?: field appender on @argonaut.Json
     * It will only append a option of tuple if the tuple exists.
     */
-  val myOtherObject: Json = ???
+//  val myOtherObject: Json = ???
 
 
   /**
