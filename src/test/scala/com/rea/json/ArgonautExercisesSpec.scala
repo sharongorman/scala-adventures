@@ -71,7 +71,7 @@ class ArgonautExercisesSpec extends Specification with JsonMatchers {
     "Exercise 9 encodes a property" should {
       val agent = Agent("Jones", List("james", "henry"), true)
       val property = Property("a great house", agent)
-      val propertyJson = writeProperty(property)
+      lazy val propertyJson = writeProperty(property)
 
 
 
@@ -97,7 +97,7 @@ class ArgonautExercisesSpec extends Specification with JsonMatchers {
       "Exercise 10 encodes a property" should {
         val agent = Agent("Jones", List("james", "henry"), true)
         val property = Property("a great house", agent)
-        val propertyJson = writePropertyWithEncoder(property)
+        lazy val propertyJson = writePropertyWithEncoder(property)
 
         "with description" in {
           propertyJson must /("description" -> "a great house")
