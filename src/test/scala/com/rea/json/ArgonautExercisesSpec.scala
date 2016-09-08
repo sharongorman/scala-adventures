@@ -1,10 +1,11 @@
 package com.rea.json
 
+import org.specs2.matcher.{JsonType, Matcher, JsonMatchers}
 import org.specs2.mutable.Specification
 import ArgonautExercises._
 import argonaut._, Argonaut._
 
-class ArgonautExercisesSpec extends Specification {
+class ArgonautExercisesSpec extends Specification with JsonMatchers {
 
   "ArgonautExcercises" should {
     "Exercise 1 prints a string" in {
@@ -26,12 +27,99 @@ class ArgonautExercisesSpec extends Specification {
 
     "Exercise 4 encodes an Agent object" in {
       val agent = Agent("Jones", List("james", "henry"), true)
-      writeAgent(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principle":true}""")
+      writeAgent(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true}""")
     }
 
     "Exercise 5 encodes an Agent object" in {
       val agent = Agent("Jones", List("james", "henry"), true)
-      writeAgent2(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principle":true}""")
+      writeAgent2(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true}""")
+    }
+
+    "Exercise 6" should {
+      "encode an Agent object with no agent id" in {
+        val agent = Agent("Jones", List("james", "henry"), true)
+        writeAgent3(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true}""")
+      }
+      "encode an Agent object with agent id" in {
+        val agent = Agent("Jones", List("james", "henry"), true, Some("FXDNI"))
+        writeAgent3(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true,"agentid":"FXDNI"}""")
+      }
+    }
+
+    "Exercise 7" should {
+      "encode an Agent object with no agent id" in {
+        val agent = Agent("Jones", List("james", "henry"), true)
+        writeAgent4(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true}""")
+      }
+      "encode an Agent object with agent id" in {
+        val agent = Agent("Jones", List("james", "henry"), true, Some("FXDNI"))
+        writeAgent4(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true,"agentid":"FXDNI"}""")
+      }
+    }
+
+    "Exercise 8" should {
+      "encode an Agent object with no agent id" in {
+        val agent = Agent("Jones", List("james", "henry"), true)
+        writeAgent5(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true}""")
+      }
+      "encode an Agent object with agent id" in {
+        val agent = Agent("Jones", List("james", "henry"), true, Some("FXDNI"))
+        writeAgent5(agent) must beEqualTo("""{"surname":"Jones","firstNames":["james","henry"],"principal":true,"agentid":"FXDNI"}""")
+      }
+    }
+
+    "Exercise 9 encodes a property" should {
+      val agent = Agent("Jones", List("james", "henry"), true)
+      val property = Property("a great house", agent)
+      val propertyJson = writeProperty(property)
+
+
+
+      "with description" in {
+        propertyJson must /("description" -> "a great house")
+      }
+
+      "with agent" in {
+        "with surname" in {
+          propertyJson must /("agent")/("surname" -> agent.surname)
+        }
+        "with principal" in {
+          propertyJson must /("agent")/("principal" -> agent.principal)
+        }
+        "with firstNames" in {
+          propertyJson must (/("agent")/("firstNames")).andHave(exactly(agent.firstNames:_*))
+        }
+
+      }
+
+
+
+      "Exercise 10 encodes a property" should {
+        val agent = Agent("Jones", List("james", "henry"), true)
+        val property = Property("a great house", agent)
+        val propertyJson = writePropertyWithEncoder(property)
+
+        "with description" in {
+          propertyJson must /("description" -> "a great house")
+        }
+
+        "with agent" in {
+          "with surname" in {
+            propertyJson must /("agent") / ("surname" -> agent.surname)
+          }
+          "with principal" in {
+            propertyJson must /("agent") / ("principal" -> agent.principal)
+          }
+          "with firstNames" in {
+            propertyJson must (/("agent") / ("firstNames")).andHave(exactly(agent.firstNames: _*))
+          }
+
+        }
+      }
+
+
+
+
     }
 
   }
