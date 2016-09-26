@@ -39,7 +39,7 @@ object ErrorExercises {
     * If the agentId is not there, it should return an AppError, wrapped in an ErrorOr.
     * For simplicity, our "agents repository" is simply a map of AgentId -> Agent.
     *
-    * hint: Investigate the Map.get method.
+    * HINT: Investigate the Map.get method.
     */
 
   val agents = Map(
@@ -55,7 +55,7 @@ object ErrorExercises {
     * Lets look at what happens if we want to use the result of this lookup.
     * For now lets pop it in a string s"The agent is ${agent.name}"
     *
-    * hint: ErrorOr[A] has a map method, that lets us manipulate the results on the right: 
+    * HINT: ErrorOr[A] has a map method, that lets us manipulate the results on the right: 
     *  def map[B](g: A => B): ErrorOr[B]
     */
 
@@ -84,7 +84,7 @@ object ErrorExercises {
   /**
     * Then we can find the agent from the property id.
     *
-    * hint: Because ErrorOr is a monad, it has a flatMap method:
+    * HINT: Because ErrorOr is a monad, it has a flatMap method:
     * def flatMap[B](g: A => ErrorOr[B]): ErrorOr[B]
     */
   def findPropertyAgent(propertyId: PropertyId) : ErrorOr[Agent] = ???
@@ -105,7 +105,7 @@ object ErrorExercises {
     * This time we either want a Vector of agents if they are all successful, or the
     * first error message.
     *
-    * Hint: investigate the "traverse" method. This lets us perform an action on each element of the vector, 
+    * HINT: investigate the "traverse" method. This lets us perform an action on each element of the vector, 
     * distributing the action over the whole traversable structure.
     *
     * Where F an action for which Applicative[F] is defined, the signature is something like:
@@ -119,7 +119,7 @@ object ErrorExercises {
     * Let check if a list of agent ids exist.
     * This time we either want an error if one doesn't exist or a unit (i.e they exist)
     *
-    * hint: There is a version of traverse called "traverseU_" that returns F[Unit]
+    * HINT: There is a version of traverse called "traverseU_" that returns F[Unit]
     * so we don't have to wastefully collect all the answers. The underscore is a Haskell/scalaz naming convention, 
     * indicating that the results are thrown away.
     */
@@ -139,7 +139,7 @@ object ErrorExercises {
     * Lets lookup a list of agents again.
     * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
     *
-    * hint: Consider Scalaz's method ".separate", which among other things, can squeeze an F[A \/ B] into an (F[A], F[B]). 
+    * HINT: Consider Scalaz's method ".separate", which among other things, can squeeze an F[A \/ B] into an (F[A], F[B]). 
     */
 
   def findSomeAgents(agentIds: Vector[AgentId]): (Vector[AppError], Vector[Agent]) = ???
@@ -150,7 +150,7 @@ object ErrorExercises {
     * Lets lookup an agency and a property, and create the string "Hey ${agent.name} how about selling ${property.description}"
     * We should get the first error if they fail.
     *
-    * hint: use a for comprehension
+    * HINT: use a for comprehension.
     */
   def suggestAProperty(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] = ???
 
