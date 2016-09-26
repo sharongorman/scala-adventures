@@ -31,7 +31,9 @@ object ErrorExercises {
 
 
   /**
-    * Exercise 1 : Implement findAgent.  
+    * Exercise 1: 
+    * 
+    * Implement findAgent.  
     *
     * It should find the agentId in agents, and return it wrapped in an ErrorOr.
     * If the agentId is not there, it should return an AppError, wrapped in an ErrorOr.
@@ -48,7 +50,7 @@ object ErrorExercises {
   def findAgent(agentId: AgentId): ErrorOr[Agent] = ???
 
   /**
-    * Exercise 2 :
+    * Exercise 2:
     *
     * Lets look at what happens if we want to use the result of this lookup.
     * For now lets pop it in a string s"The agent is ${agent.name}"
@@ -60,7 +62,7 @@ object ErrorExercises {
   def findAgentAnswer(agentId: AgentId) : ErrorOr[String] = ???
 
   /**
-    * Exercise 3 :
+    * Exercise 3:
     *
     * Lets look at what happens if we want to use the result of one lookup in another lookup
     * So lets look up the property by id, and then use the resulting property's agent id to find the agent.
@@ -98,6 +100,7 @@ object ErrorExercises {
 
   /**
     * Exercise 5:
+    *
     * Lets look up a list of agent ids.
     * This time we either want a Vector of agents if they are all successful, or the
     * first error message.
