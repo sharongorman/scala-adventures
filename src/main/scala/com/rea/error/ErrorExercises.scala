@@ -14,6 +14,10 @@ object ErrorExercises {
   /**
     * And lets define a paramaterized type "ErrorOr".
     * We are going to use this to represent any return type, that could be an error.
+    *
+    * By convention, errors are on the left, and our desired values are on the right.
+    *
+    * We can create \/s with the -\/(errorOnTheLeft) and \/-(valueOnTheRight) constructors.
    **/
   type ErrorOr[A] = AppError \/ A
 
@@ -101,8 +105,8 @@ object ErrorExercises {
     * Hint: investigate the "traverse" method. This lets us perform an action on each element of the vector, 
     * distributing the action over the whole traversable structure.
     *
-    * Where F is our action, the signature is something like:
-    * def traverse[F[_]](f: A => F[B])(app: Applicative[F]): F[Vector[B]]
+    * Where F an action for which Applicative[F] is defined, the signature is something like:
+    * def traverse[F[_]](f: A => F[B]): F[Vector[B]]
     */
 
   def findAllAgents(agentIds: Vector[AgentId]): ErrorOr[Vector[Agent]] = ???
@@ -122,29 +126,53 @@ object ErrorExercises {
   /** Exercise 7:
     *
     * Let look up a list of agent ids.
-    * This time we either want an error if one doesn't exist or a list of the agents names
+    * This time we either want an error if one doesn't exist or a list of the agents' names.
     */
   def findAllAgentsNames(agentIds: Vector[AgentId]): ErrorOr[Vector[String]] = ???
 
   /**
     * Exercise 8:
+    *
     * Lets lookup a list of agents again.
     * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
+    *
+    * hint: Consider Scalaz's method ".separate", which among other things, can squeeze an F[A \/ B] into an (F[A], F[B]). 
     */
 
   def findSomeAgents(agentIds: Vector[AgentId]): (Vector[AppError], Vector[Agent]) = ???
 
   /**
     * Exercise 9:
+    *
     * Lets lookup an agency and a property, and create the string "Hey ${agent.name} how about selling ${property.description}"
     * We should get the first error if they fail.
-    * Hint, use a for comprehension
+    *
+    * hint: use a for comprehension
     */
   def suggestAProperty(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] = ???
 
   /**
     * Exercise 10:
-    * Try the above using apply2 method: Apply[F[_]].apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C]
+    *
+    * Applicative is a concept that allows us to lift a function of any arity to operating on arguments inside some F.
+    *            A --->  F[A]
+    *       A => B --->  F[A] => F[B]
+    *   (A,B) => C ---> (F[A], F[B]) => F[C]
+    * (A,B,C) => D ---> (F[A], F[B], F[C]) => F[D]
+    *              ...
+    *
+    * If arguments (ie A, B, C, etc) don't depend on each other, then Applicatives are a weaker and more general 
+    * alternative to monads.
+    *
+    * We can use it here by instantiating Apply[F], and calling applyN for the number of arguments we have.
+    *
+    * ie
+    * def makeSandwich(b: Bacon, l: Lettuce, t: Tomato): Sandwich = ...
+    *
+    * val optionalSandwich: Option[Sandwich] = 
+    *   Apply[Option].apply3(optionalBacon, optionalLettuce, optionalTomato)(makeSandwich)
+    *
+    * Try rewriting the suggestAProperty method above using an Apply[ErrorOr].applyXXX variant.
     */
 
   def suggestAProperty2(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] = ???
