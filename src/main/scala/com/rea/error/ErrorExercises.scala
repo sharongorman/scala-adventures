@@ -101,6 +101,21 @@ object ErrorExercises {
   /**
     * Exercise 5:
     *
+    * Having obtained them, it would be tiresome to handle each possibly 
+    * failed agent individually. Either succeed with the full Vector[Agent] 
+    * on the right, or fail with an AppError on the left. 
+    *
+    * HINT: investigate the "sequence" method. This lets us apply the outer action
+    * across the whole structure. The signature is something like:
+    *
+    * def sequence[F[_]]: F[Vector[A]]
+    */
+  def sequenceAgents(agentIds: Vector[ErrorOr[Agent]]): ErrorOr[Vector[Agent]] = ???
+
+
+  /**
+    * Exercise 6:
+    *
     * Lets look up a list of agent ids.
     * This time we either want a Vector of agents if they are all successful, or the
     * first error message.
@@ -114,7 +129,7 @@ object ErrorExercises {
 
   def findAllAgents(agentIds: Vector[AgentId]): ErrorOr[Vector[Agent]] = ???
 
-  /** Exercise 6:
+  /** Exercise 7:
     *
     * Let check if a list of agent ids exist.
     * This time we either want an error if one doesn't exist or a unit (i.e they exist)
@@ -126,7 +141,7 @@ object ErrorExercises {
 
   def checkAllAgents(agentIds: Vector[AgentId]): ErrorOr[Unit] = ???
 
-  /** Exercise 7:
+  /** Exercise 8:
     *
     * Let look up a list of agent ids.
     * This time we either want an error if one doesn't exist or a list of the agents' names.
@@ -134,7 +149,7 @@ object ErrorExercises {
   def findAllAgentsNames(agentIds: Vector[AgentId]): ErrorOr[Vector[String]] = ???
 
   /**
-    * Exercise 8:
+    * Exercise 9:
     *
     * Lets lookup a list of agents again.
     * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
@@ -145,7 +160,7 @@ object ErrorExercises {
   def findSomeAgents(agentIds: Vector[AgentId]): (Vector[AppError], Vector[Agent]) = ???
 
   /**
-    * Exercise 9:
+    * Exercise 10:
     *
     * Lets lookup an agency and a property, and create the string "Hey ${agent.name} how about selling ${property.description}"
     * We should get the first error if they fail.
@@ -155,7 +170,7 @@ object ErrorExercises {
   def suggestAProperty(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] = ???
 
   /**
-    * Exercise 10:
+    * Exercise 11:
     *
     * Applicative is a concept that allows us to lift a function of any arity to operating on arguments inside some F.
     *            A --->  F[A]
