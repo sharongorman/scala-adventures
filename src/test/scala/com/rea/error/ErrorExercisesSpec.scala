@@ -55,6 +55,21 @@ class ErrorExercisesSpec extends Specification {
     }
 
     "Exercise 5" should {
+        val agent1 = Agent(1, "Arabella Gilliums")
+        val agent2 = Agent(2, "Gurmley Warblett")
+
+      "return successful Vector[Agent]" in {
+        sequenceAgents(Vector(\/-(agent1), \/-(agent2))) must beEqualTo(\/-(Vector(agent1, agent2)))
+      }
+
+      "return an error if agent not found " in {
+        val error = AppError("Oh my.")
+        sequenceAgents(Vector(\/-(agent1), -\/(error))) must beEqualTo(-\/(error))
+      }
+    }
+
+
+    "Exercise 6" should {
       "return agents" in {
         findAllAgents(Vector(1,2)) must be_\/-(Vector(agent1, agent2))
       }
@@ -63,7 +78,8 @@ class ErrorExercisesSpec extends Specification {
         findAllAgents(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
       }
     }
-    "Exercise 6" should {
+
+    "Exercise 7" should {
       "return unit if there are not missing agents" in {
         checkAllAgents(Vector(1,2)) must be_\/-(())
       }
@@ -73,7 +89,7 @@ class ErrorExercisesSpec extends Specification {
       }
     }
 
-    "Exercise 7" should {
+    "Exercise 8" should {
       "return unit if there are not missing agents" in {
         findAllAgentsNames(Vector(1,2)) must be_\/-(Vector(agent1.name, agent2.name))
       }
@@ -83,7 +99,7 @@ class ErrorExercisesSpec extends Specification {
       }
     }
 
-    "Exercise 8" should {
+    "Exercise 9" should {
       "return agents" in {
         findSomeAgents(Vector(1, 2)) must beEqualTo(Nil, Vector(agent1, agent2))
       }
@@ -93,7 +109,7 @@ class ErrorExercisesSpec extends Specification {
       }
     }
 
-    "Exercise 9" should {
+    "Exercise 10" should {
       "return a suggestion string " in {
         suggestAProperty(12, 1) must be_\/-(s"Hey ${agent1.name} how about selling A great house")
       }
@@ -107,7 +123,7 @@ class ErrorExercisesSpec extends Specification {
       }
     }
 
-    "Exercise 10" should {
+    "Exercise 11" should {
       "return a suggestion string " in {
         suggestAProperty2(12, 1) must be_\/-(s"Hey ${agent1.name} how about selling A great house")
       }
