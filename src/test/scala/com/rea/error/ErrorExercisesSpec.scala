@@ -2,88 +2,105 @@ package com.rea.error
 
 import org.specs2.mutable.Specification
 import ErrorExercises._
-import scalaz._, Scalaz._
-import org.specs2.matcher.DisjunctionMatchers._
+import cats.data.Xor
 
-class ErrorExercisesSpec extends Specification {
+import org.specs2.matcher.XorMatchers
+
+class ErrorExercisesSpec extends Specification with XorMatchers {
 
   "ErrorExercisesSpec" should {
     "Exercise 1" should {
       "return an error" in {
-        findAgent(3) must be_-\/
+        findAgent(3) must beXorLeft
       }
 
       "return success" in {
-        findAgent(1) must be_\/-(agent1)
+        findAgent(1) must beXorRight(agent1)
       }
     }
 
     "Exercise 2" should {
       "return an error" in {
-        findAgentAnswer(3) must be_-\/
+        findAgentAnswer(3) must beXorLeft
       }
 
       "return success" in {
-        findAgentAnswer(1) must be_\/-(s"The agent is ${agent1.name}")
+        findAgentAnswer(1) must beXorRight(s"The agent is ${agent1.name}")
       }
     }
 
 
     "Exercise 3" should {
       "return an error when the property doesn't exist" in {
-        findPropertyAgent(10) must be_-\/(AppError("property 10 not found"))
+        findPropertyAgent(10) must beXorLeft(AppError("property 10 not found"))
       }
 
       "return an error when the agent doesn't exist" in {
-        findPropertyAgent(17) must be_-\/(AppError("agent 0 not found"))
+        findPropertyAgent(17) must beXorLeft(AppError("agent 0 not found"))
       }
 
       "find the correct agent" in {
-        findPropertyAgent(12) must be_\/-(agent1)
+        findPropertyAgent(12) must beXorRight(agent1)
       }
     }
 
     "Exercise 4" should {
       "return agents" in {
-        findAgents(Vector(1,2)) must beEqualTo(Vector(\/-(agent1), \/-(agent2)))
+        findAgents(Vector(1,2)) must beEqualTo(Vector(Xor.Right(agent1), Xor.Right(agent2)))
       }
 
       "return an error if agent not found " in {
-        findAgents(Vector(0,2)) must beEqualTo(Vector(-\/(AppError("agent 0 not found")), \/-(agent2)))
+        findAgents(Vector(0,2)) must beEqualTo(Vector(Xor.Left(AppError("agent 0 not found")), Xor.Right(agent2)))
       }
 
     }
 
     "Exercise 5" should {
-      "return agents" in {
-        findAllAgents(Vector(1,2)) must be_\/-(Vector(agent1, agent2))
+      val agent1 = Agent(1, "Arabella Gilliums")
+      val agent2 = Agent(2, "Gurmley Warblett")
+
+      "return successful Vector[Agent]" in {
+        sequenceAgents(Vector(Xor.Right(agent1), Xor.Right(agent2))) must beEqualTo(Xor.Right(Vector(agent1, agent2)))
       }
 
       "return an error if agent not found " in {
-        findAllAgents(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
+        val error = AppError("Oh my.")
+        sequenceAgents(Vector(Xor.Right(agent1), Xor.Left(error))) must beEqualTo(Xor.Left(error))
       }
     }
+
+
     "Exercise 6" should {
-      "return unit if there are not missing agents" in {
-        checkAllAgents(Vector(1,2)) must be_\/-(())
+      "return agents" in {
+        findAllAgents(Vector(1,2)) must beXorRight(Vector(agent1, agent2))
       }
 
       "return an error if agent not found " in {
-        checkAllAgents(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
+        findAllAgents(Vector(0,2)) must beXorLeft(AppError("agent 0 not found"))
       }
     }
 
     "Exercise 7" should {
       "return unit if there are not missing agents" in {
-        findAllAgentsNames(Vector(1,2)) must be_\/-(Vector(agent1.name, agent2.name))
+        checkAllAgents(Vector(1,2)) must beXorRight(())
       }
 
       "return an error if agent not found " in {
-        findAllAgentsNames(Vector(0,2)) must be_-\/(AppError("agent 0 not found"))
+        checkAllAgents(Vector(0,2)) must beXorLeft(AppError("agent 0 not found"))
       }
     }
 
     "Exercise 8" should {
+      "return unit if there are not missing agents" in {
+        findAllAgentsNames(Vector(1,2)) must beXorRight(Vector(agent1.name, agent2.name))
+      }
+
+      "return an error if agent not found " in {
+        findAllAgentsNames(Vector(0,2)) must beXorLeft(AppError("agent 0 not found"))
+      }
+    }
+
+    "Exercise 9" should {
       "return agents" in {
         findSomeAgents(Vector(1, 2)) must beEqualTo(Nil, Vector(agent1, agent2))
       }
@@ -93,31 +110,45 @@ class ErrorExercisesSpec extends Specification {
       }
     }
 
-    "Exercise 9" should {
+    "Exercise 10" should {
       "return a suggestion string " in {
-        suggestAProperty(12, 1) must be_\/-(s"Hey ${agent1.name} how about selling A great house")
+        suggestAProperty(12, 1) must beXorRight(s"Hey ${agent1.name} how about selling A great house")
       }
 
       "return an error if agent not found " in {
-        suggestAProperty(12, 0) must be_-\/(AppError("agent 0 not found"))
+        suggestAProperty(12, 0) must beXorLeft(AppError("agent 0 not found"))
       }
 
       "return an error if property not found " in {
-        suggestAProperty(0, 1) must be_-\/(AppError("property 0 not found"))
+        suggestAProperty(0, 1) must beXorLeft(AppError("property 0 not found"))
+      }
+    }
+
+    "Exercise 11" should {
+      "return a suggestion string " in {
+        suggestAProperty2(12, 1) must beXorRight(s"Hey ${agent1.name} how about selling A great house")
+      }
+
+      "return an error if agent not found " in {
+        suggestAProperty2(12, 0) must beXorLeft(AppError("agent 0 not found"))
+      }
+
+      "return an error if property not found " in {
+        suggestAProperty2(0, 1) must beXorLeft(AppError("property 0 not found"))
       }
     }
 
     "Exercise 10" should {
       "return a suggestion string " in {
-        suggestAProperty2(12, 1) must be_\/-(s"Hey ${agent1.name} how about selling A great house")
+        suggestAProperty2(12, 1) must beXorRight(s"Hey ${agent1.name} how about selling A great house")
       }
 
       "return an error if agent not found " in {
-        suggestAProperty2(12, 0) must be_-\/(AppError("agent 0 not found"))
+        suggestAProperty2(12, 0) must beXorLeft(AppError("agent 0 not found"))
       }
 
       "return an error if property not found " in {
-        suggestAProperty2(0, 1) must be_-\/(AppError("property 0 not found"))
+        suggestAProperty2(0, 1) must beXorLeft(AppError("property 0 not found"))
       }
     }
 

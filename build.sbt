@@ -11,17 +11,22 @@ resolvers ++= Seq(
   "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases")
 
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
-sbtVersion := "0.13.9"
+sbtVersion := "0.13.11"
 
-val specs2Version = "3.6.6"
+val specs2Version = "3.8.5"
+
+val catsVersion = "0.7.2"
 
 libraryDependencies ++= Seq(
-  "org.scalaz"                      %% "scalaz-core"                 % "7.1.6",
+  "org.typelevel"                   %% "cats"                        % catsVersion,
+  "org.scalaz"                      %% "scalaz-core"                 % "7.2.6",
   "io.argonaut"                     %% "argonaut"                    % "6.1",
-"org.specs2"                      %% "specs2-core"                 % specs2Version    % "test",
-  "org.specs2"                      %% "specs2-matcher-extra"        % specs2Version    % "test"
+  "org.scalaz"                      %% "scalaz-core"                 % "7.2.6"          % "test",
+  "org.specs2"                      %% "specs2-core"                 % specs2Version    % "test",
+  "org.specs2"                      %% "specs2-matcher-extra"        % specs2Version    % "test",
+  "org.specs2"                      %% "specs2-cats"                 % specs2Version    % "test"
 )
 
 scalacOptions in Test ++= Seq("-Yrangepos")

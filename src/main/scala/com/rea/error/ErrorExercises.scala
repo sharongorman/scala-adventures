@@ -1,5 +1,6 @@
 package com.rea.error
-import scalaz._, Scalaz._
+
+import cats.data.Xor
 
 object ErrorExercises {
 
@@ -12,14 +13,14 @@ object ErrorExercises {
   case class AppError(message: String, throwable: Option[Throwable] = None)
 
   /**
-    * And lets define a paramaterized type "ErrorOr".
+    * And lets define a parameterised type "ErrorOr".
     * We are going to use this to represent any return type, that could be an error.
     *
     * By convention, errors are on the left, and our desired values are on the right.
     *
-    * We can create \/s with the -\/(errorOnTheLeft) and \/-(valueOnTheRight) constructors.
+    * We can create ErrorOrs with the Xor.Left(errorOnTheLeft) and Xor.Right(valueOnTheRight) constructors.
    **/
-  type ErrorOr[A] = AppError \/ A
+  type ErrorOr[A] = Xor[AppError, A]
 
 
   /** Now lets define our model:
@@ -48,8 +49,8 @@ object ErrorExercises {
   )
 
   def findAgent(agentId: AgentId): ErrorOr[Agent] = agents.get(agentId) match {
-    case None => -\/(AppError(s"agent $agentId not found"))
-    case Some(agent) => \/-(agent)
+    case None => Xor.Left(AppError(s"agent $agentId not found"))
+    case Some(agent) => Xor.Right(agent)
   }
 
   /**
@@ -62,7 +63,7 @@ object ErrorExercises {
     *  def map[B](g: A => B): ErrorOr[B]
     */
 
-  def findAgentAnswer(agentId: AgentId) : ErrorOr[String] = 
+  def findAgentAnswer(agentId: AgentId) : ErrorOr[String] =
     findAgent(agentId).map(agent => s"The agent is ${agent.name}")
 
   /**
@@ -84,8 +85,8 @@ object ErrorExercises {
   )
 
   def findProperty(propertyId: PropertyId) : ErrorOr[Property] = properties.get(propertyId) match {
-    case None => -\/(AppError(s"property $propertyId not found"))
-    case Some(property) => \/-(property)
+    case None => Xor.Left(AppError(s"property $propertyId not found"))
+    case Some(property) => Xor.Right(property)
   }
 
   /**
@@ -103,10 +104,9 @@ object ErrorExercises {
     * Lets look up a list of agent ids.
     * We want to get either a Vector[ErrorOr[String]]
     */
-  def findAgents(agentIds: Vector[AgentId]): Vector[ErrorOr[Agent]] = 
+  def findAgents(agentIds: Vector[AgentId]): Vector[ErrorOr[Agent]] =
     agentIds.map(findAgent)
     // Same thing as agentIds.map(id => findAgent(id))
-
 
   /**
     * Exercise 5:
@@ -123,7 +123,6 @@ object ErrorExercises {
   def sequenceAgents(agentIds: Vector[ErrorOr[Agent]]): ErrorOr[Vector[Agent]] =
     agentIds.sequence
 
-
   /**
     * Exercise 6:
     *
@@ -138,7 +137,7 @@ object ErrorExercises {
     * def traverse[F[_]](f: A => F[B]): F[Vector[B]]
     */
 
-  def findAllAgents(agentIds: Vector[AgentId]): ErrorOr[Vector[Agent]] = 
+  def findAllAgents(agentIds: Vector[AgentId]): ErrorOr[Vector[Agent]] =
     agentIds.traverse(findAgent)
 
   /** Exercise 7:
@@ -168,7 +167,7 @@ object ErrorExercises {
     * Lets lookup a list of agents again.
     * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
     *
-    * HINT: Consider Scalaz's method ".separate", which among other things, can squeeze an F[A \/ B] into an (F[A], F[B]). 
+    * HINT: Consider Scala's method on collections ".partition"
     */
 
   def findSomeAgents(agentIds: Vector[AgentId]): (Vector[AppError], Vector[Agent]) = 
@@ -182,7 +181,7 @@ object ErrorExercises {
     *
     * HINT: use a for comprehension.
     */
-  def suggestAProperty(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] = 
+  def suggestAProperty(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] =
     for {
       property <- findProperty(propertyId)
       agent <- findAgent(agentId)
@@ -217,4 +216,5 @@ object ErrorExercises {
 
     Apply[ErrorOr].apply2(findAgent(agentId), findProperty(propertyId))(suggestString)
   }
+
 }

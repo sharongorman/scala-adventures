@@ -51,9 +51,9 @@ object ArgonautExercises {
     * Codecs to the rescue!
     * We can construct a tuple of (JsonField, Json) by using the := method.
     * This is a method added on String by aronaut, that uses an implicit encoder on the passed object, to give you back the tuple.
-    * e.g.
+    *  e.g.
     */
-  val myField = "myField" := "some string" // use your IDE to explore implicit parameters and the := method in this variable definition.
+  val myField = "myField" := "some string"  // use your IDE to explore implicit parameters and the := method in this variable definition.
 
   /** Exercise 5
     * Rewrite agent encoding using the codecs style
@@ -147,7 +147,6 @@ object ArgonautExercises {
     jEmptyObject
   }.nospaces
 
-
   /**
     * Option 3
     * Use a custom formater, in place of no spaces to strip out optional values when you are converting from Json to a string
@@ -157,7 +156,7 @@ object ArgonautExercises {
     * Exercise 8
     *
     *
-    * Rewrite agent encoding the above pretty formatter (Use the
+    * Rewrite agent encoding the above pretty formatter (Use the Json.pretty(p: PrettyParams)) method.
     *
     **/
 
