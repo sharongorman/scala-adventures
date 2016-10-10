@@ -1,6 +1,8 @@
 package com.rea.error
 
+import cats.Apply
 import cats.data.Xor
+import cats.implicits._
 
 object ErrorExercises {
 
@@ -121,7 +123,7 @@ object ErrorExercises {
     * def sequence[F[_]]: F[Vector[A]]
     */
   def sequenceAgents(agentIds: Vector[ErrorOr[Agent]]): ErrorOr[Vector[Agent]] =
-    agentIds.sequence
+    agentIds.sequence[ErrorOr, Agent]
 
   /**
     * Exercise 6:
@@ -138,7 +140,7 @@ object ErrorExercises {
     */
 
   def findAllAgents(agentIds: Vector[AgentId]): ErrorOr[Vector[Agent]] =
-    agentIds.traverse(findAgent)
+    agentIds.traverse[ErrorOr, Agent](findAgent)
 
   /** Exercise 7:
     *
@@ -146,12 +148,12 @@ object ErrorExercises {
     * This time we either want an error if one doesn't exist or a unit (i.e they exist)
     *
     * HINT: There is a version of traverse called "traverseU_" that returns F[Unit]
-    * so we don't have to wastefully collect all the answers. The underscore is a Haskell/scalaz naming convention, 
+    * so we don't have to wastefully collect all the answers. The underscore is a Haskell/scalaz/cats naming convention,
     * indicating that the results are thrown away.
     */
 
   def checkAllAgents(agentIds: Vector[AgentId]): ErrorOr[Unit] = 
-    agentIds.traverseU_(findAgent)
+    agentIds.traverse_[ErrorOr, Agent](findAgent)
 
   /** Exercise 8:
     *
@@ -167,7 +169,7 @@ object ErrorExercises {
     * Lets lookup a list of agents again.
     * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
     *
-    * HINT: Consider Scala's method on collections ".partition"
+    * HINT: Consider cats method ".separate", which among other things, can squeeze an F[Xor[A,B]] into an (F[A], F[B]).
     */
 
   def findSomeAgents(agentIds: Vector[AgentId]): (Vector[AppError], Vector[Agent]) = 
@@ -214,7 +216,7 @@ object ErrorExercises {
   def suggestAProperty2(propertyId: Int, agentId: Int): ErrorOr[String] = {
     def suggestString(agent: Agent, property: Property) = s"Hey ${agent.name} how about selling ${property.description}"
 
-    Apply[ErrorOr].apply2(findAgent(agentId), findProperty(propertyId))(suggestString)
+    Apply[ErrorOr].map2(findAgent(agentId), findProperty(propertyId))(suggestString)
   }
 
 }

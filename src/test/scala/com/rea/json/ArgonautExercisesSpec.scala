@@ -114,7 +114,7 @@ class ArgonautExercisesSpec extends Specification with JsonMatchers {
 
         }
       }
-      
+
 
     }
 
