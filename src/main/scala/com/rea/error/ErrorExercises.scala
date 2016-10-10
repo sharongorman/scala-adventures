@@ -1,5 +1,6 @@
 package com.rea.error
-import scalaz._, Scalaz._
+
+import cats.data.Xor
 
 object ErrorExercises {
 
@@ -12,14 +13,14 @@ object ErrorExercises {
   case class AppError(message: String, throwable: Option[Throwable] = None)
 
   /**
-    * And lets define a paramaterized type "ErrorOr".
+    * And lets define a parameterised type "ErrorOr".
     * We are going to use this to represent any return type, that could be an error.
     *
     * By convention, errors are on the left, and our desired values are on the right.
     *
-    * We can create \/s with the -\/(errorOnTheLeft) and \/-(valueOnTheRight) constructors.
+    * We can create ErrorOrs with the Xor.Left(errorOnTheLeft) and Xor.Right(valueOnTheRight) constructors.
    **/
-  type ErrorOr[A] = AppError \/ A
+  type ErrorOr[A] = Xor[AppError, A]
 
 
   /** Now lets define our model:
@@ -154,7 +155,7 @@ object ErrorExercises {
     * Lets lookup a list of agents again.
     * This time the result should be a Vector of all the errors, and a list of all the successfully found values.
     *
-    * HINT: Consider Scalaz's method ".separate", which among other things, can squeeze an F[A \/ B] into an (F[A], F[B]). 
+    * HINT: Consider Scala's method on collections ".partition"
     */
 
   def findSomeAgents(agentIds: Vector[AgentId]): (Vector[AppError], Vector[Agent]) = ???
