@@ -73,8 +73,6 @@ class ArgonautExercisesSpec extends Specification with JsonMatchers {
       val property = Property("a great house", agent)
       val propertyJson = writeProperty(property)
 
-
-
       "with description" in {
         propertyJson must /("description" -> "a great house")
       }
@@ -116,8 +114,6 @@ class ArgonautExercisesSpec extends Specification with JsonMatchers {
 
         }
       }
-
-
 
 
     }
