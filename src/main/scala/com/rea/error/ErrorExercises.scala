@@ -1,7 +1,6 @@
 package com.rea.error
 
 import cats.Apply
-import cats.data.Xor
 import cats.implicits._
 
 object ErrorExercises {
@@ -20,9 +19,9 @@ object ErrorExercises {
     *
     * By convention, errors are on the left, and our desired values are on the right.
     *
-    * We can create ErrorOrs with the Xor.Left(errorOnTheLeft) and Xor.Right(valueOnTheRight) constructors.
+    * We can create ErrorOrs with the Left(errorOnTheLeft) and Right(valueOnTheRight) constructors.
    **/
-  type ErrorOr[A] = Xor[AppError, A]
+  type ErrorOr[A] = Either[AppError, A]
 
 
   /** Now lets define our model:
@@ -51,8 +50,8 @@ object ErrorExercises {
   )
 
   def findAgent(agentId: AgentId): ErrorOr[Agent] = agents.get(agentId) match {
-    case None => Xor.Left(AppError(s"agent $agentId not found"))
-    case Some(agent) => Xor.Right(agent)
+    case None => Left(AppError(s"agent $agentId not found"))
+    case Some(agent) => Right(agent)
   }
 
   /**
@@ -87,8 +86,8 @@ object ErrorExercises {
   )
 
   def findProperty(propertyId: PropertyId) : ErrorOr[Property] = properties.get(propertyId) match {
-    case None => Xor.Left(AppError(s"property $propertyId not found"))
-    case Some(property) => Xor.Right(property)
+    case None => Left(AppError(s"property $propertyId not found"))
+    case Some(property) => Right(property)
   }
 
   /**

@@ -1,25 +1,23 @@
 package com.rea.json
 
-import com.rea.json.ArgonautDecodeExercises._
-import argonaut._, Argonaut._
+import com.rea.json.CirceDecodeExercises._
+import io.circe.Json
 import org.specs2.mutable.Specification
 
-import scalaz.{\/-, -\/}
+class CirceDecodeExercisesSpec extends Specification {
 
-class ArgonautDecodeExercisesSpec extends Specification {
-
-  "ArgonautDecodeExcercises" should {
+  "CirceDecodeExercises" should {
     "Exercise 1.1 " should {
       "parse a valid json string to Json" in {
         parseToJson(""""yup, json string"""") match {
-          case -\/(error) => ko(s"Error parsing json: $error")
-          case \/-(json) => json must beEqualTo(jString("yup, json string"))
+          case Left(error) => ko(s"Error parsing json: $error")
+          case Right(json) => json must beEqualTo(Json.fromString("yup, json string"))
         }
 
         "report a parsing error" in {
           parseToJson("""im not json""") match {
-            case -\/(error) => ok
-            case \/-(json) => ko("should have failed parsing invalid json")
+            case Left(error) => ok
+            case Right(json) => ko("should have failed parsing invalid json")
           }
         }
       }
@@ -58,8 +56,8 @@ class ArgonautDecodeExercisesSpec extends Specification {
           case None => ko("failed to parse json")
           case Some(result) => result must beEqualTo(
             Map(
-              "key1" -> jString("value1"),
-              "key2" -> jString("value2")
+              "key1" -> Json.fromString("value1"),
+              "key2" -> Json.fromString("value2")
             )
           )
         }
@@ -98,23 +96,7 @@ class ArgonautDecodeExercisesSpec extends Specification {
       }
     }
 
-    "Exercise 1.5" should {
-      "extract the description" in {
-        val json =
-          """
-            |{"description" : "a great house",
-            | "agent" : {
-            |   "agentName" : "Wonder Agent",
-            |   "agentId" : "WA1XXX"
-            | }
-            |}
-          """.stripMargin
-        parseAgentId(json) match {
-          case None => ko("No, it didn't work")
-          case Some(agentId) => agentId must beEqualTo("WA1XXX")
-        }
-      }
-    }
+
 
     "Exercise 2.1" should {
       "extract the description" in {
@@ -127,10 +109,10 @@ class ArgonautDecodeExercisesSpec extends Specification {
             | }
             |}
           """.stripMargin
-        json.parse.map(fetchDescription) match {
-          case -\/(error) => ko(s"failed with: $error")
-          case \/-(None) => ko("No description value returned")
-          case \/-(Some(description)) => description must beEqualTo(jString("a great house"))
+        parseToJson(json).map(fetchDescription) match {
+          case Left(error) => ko(s"failed with: $error")
+          case Right(None) => ko("No description value returned")
+          case Right(Some(description)) => description must beEqualTo(Json.fromString("a great house"))
         }
       }
     }
@@ -146,9 +128,9 @@ class ArgonautDecodeExercisesSpec extends Specification {
             | }
             |}
           """.stripMargin
-        json.parse.flatMap(fetchAgentName) match {
-          case -\/(error) => ko(s"failed with: $error")
-          case \/-(agentName) => agentName must beEqualTo(jString("Wonder Agent"))
+        parseToJson(json).flatMap(fetchAgentName) match {
+          case Left(error) => ko(s"failed with: $error")
+          case Right(agentName) => agentName must beEqualTo(Json.fromString("Wonder Agent"))
         }
       }
     }

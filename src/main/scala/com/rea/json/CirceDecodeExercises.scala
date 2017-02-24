@@ -1,19 +1,18 @@
 package com.rea.json
 
-import argonaut._, Argonaut._
+import io.circe._
 
-import scalaz.{\/-, -\/, \/}
 
 /**
   * Before we can jump straight into decoding, there are a few piece of the jigsaw we need to understand.
   *
-  * 1) Parsing strings into argonaut's Json object.
+  * 1) Parsing strings into circe's Json object.
   * 2) Cursors, particularly HCursors.
-  * 3) DecodeResult type.
+  * 3) DecodeResults and DecodingFailure.
   *
   * Once we have understood these we can understand how to write and wire decoders.
   **/
-object ArgonautDecodeExercises {
+object CirceDecodeExercises {
 
   /**
     * Part 1: Parsing strings into argonaut's Json object.
@@ -36,18 +35,18 @@ object ArgonautDecodeExercises {
 
   /**
     * Exercise 1.1
-    * Write a method that parses a jsonString.  It should return a scalaz disjunction String \/ Json.
+    * Write a method that parses a jsonString.  It should return an Either[ParsingFailure,Json], where the left hand side.
     */
 
-  def parseToJson(myJsonString: String): String \/ Json = myJsonString.parse
+  def parseToJson(myJsonString: String): Either[ParsingFailure, Json] = parser.parse(myJsonString)
 
   /**
     * So how do we get from the Json to a raw value.
     *
-    * The json object provides us with a number of methods:
-    * json.string : Option[String]   - returns a string if this json represents a string.
-    * json.number : Option[Number]   - guess what!
-    * json.obj : Option[JsonObject] - this one is a bit different, it returns a JsonObject if this is a JObject.
+    * The Json object provides us with a number of methods:
+    * Json.asBoolean: Option[Boolean]   - returns a string if this json represents a string.
+    * Json.asNumber: Option[JsonNumber] - guess what!
+    * Json.asObject: Option[JsonObject]- this one is a bit different, it returns a JsonObject if this is a JObject.
     */
 
   /**
@@ -58,22 +57,22 @@ object ArgonautDecodeExercises {
     */
 
   def parseToString(myJsonString: String): Option[String] = {
-    myJsonString.parse match {
-      case -\/(error) => None
-      case \/-(json) => json.string
+    parser.parse(myJsonString) match {
+      case Left(error) => None
+      case Right(json) => json.asString
     }
   }
 
   /**
     * Exercise 1.3
     * If the parsed value is an object, retun the key-value map
-    * Hint: you will need the json.obj method and the JsonObject.toMap.
+    * Hint: you will need the Json.asObject method and the JsonObject.toMap.
     */
 
-  def parseToMap(myJsonObject: String) : Option[Map[JsonField, Json]] = {
-    myJsonObject.parse match {
-      case -\/(error) => None
-      case \/-(json) => json.obj.map(_.toMap)
+  def parseToMap(myJsonObject: String) : Option[Map[String, Json]] = {
+    parser.parse(myJsonObject) match {
+      case Left(error) => None
+      case Right(json) => json.asObject.map(_.toMap)
     }
   }
 
@@ -95,60 +94,35 @@ object ArgonautDecodeExercises {
     for {
       fieldMap <- parseToMap(propertyJson)
       descriptionJson <- fieldMap.get("description")
-      description <- descriptionJson.string
+      description <- descriptionJson.asString
     } yield description
-  }
-
-  /** Exercise 1.5
-    * Extracting a single value from a Json object.
-    * Take a look at the "-||" method of Json
-    * def -||(fs: List[JsonField]): Option[Json]
-    *
-    * It allows us to navigate through a list of keys, and return the Json object found there.
-    * Use this to write parseAgentId
-    */
-
-  def parseAgentId(propertyJson: String) : Option[String] = {
-    propertyJson.parse match {
-      case -\/(error) => None
-      case \/-(json) => {
-        (json -|| ("agent" :: "agentId" :: Nil)).flatMap(_.string)
-      }
-    }
   }
 
 
   /**
-    * Part 2: Cursors and HCursors
+    * Part 2: ACursors and HCursors
     * ===================================================
     * So, once we have a complex json structure, decoding it to a map and then traversing that map is painful.
     * Is there a better way?
     * We can navigate around Json structures using Cursors
     * Cursors - hold a pointer to Json, and allow us to navigate the pointer around:
     *
-    * We can create a cursor from any Json object using the "cursor" method.
+    * We can create a cursor from any Json object using the "hcursor" method.
     * And we can read the Json object that the cursor is currently pointing at using the "focus" method.
     *
-    * It doesn't take long in argonaut to come accross a couple of different variations on cursors.  HCursors and ACursors.
-    * These both have similar navigation and focus methods available.
+    * An HCursor : contains the naviation "history"
+    * An ACursor: is an "answer cursor", indicating it can be in a failed state as the result of a failed navigation.
     *
-    * HCursors - are HistoryCursors that maintain their navigation history (useful for error or logging puposes).  In general
-    *            we use these rather than bare cursors.  The navigation methods on these return an ACursor.
-    *            Get an hcursor using Json.hcursor method.
-    * ACursors - I think means "AnswerCursor" , representing a result of a cursor naviation
-    *            they are a case class holding an HCursor\/HCursor , where the "left" represents a cursor that has failed
-    *            a navigation, while a right indicates it was successful.  Use the "any" method to get back an hcursor.
+    * You can still navigate on a failed cursor, but the result will always be a failed cursor.
     *
     *
-    *
-
     *
     * Navigation:
     * There are many methods to move a cursor but perhaps the most common is:
-    * def --\(q: JsonField): Option[Cursor]   ** Move the cursor down to a JSON object at the given field
+      * def downField(k: String): ACursor   ** Move the cursor down to a JSON object at the given field
     *
     * We are also going to use
-    * def -- (q: JsonField): Option[Cursor]  ** Move the cursor to the given sibling field in a JSON object
+    * def field (k: String): ACursor  ** Move the cursor to the given sibling field in a JSON object
     *
     *  Assuming that your json looks like:
     *  {"description" : "a great house",
@@ -169,18 +143,18 @@ object ArgonautDecodeExercises {
     * For now return an Option[String] to handle the case where it doesn't exist.
     */
 
-  def fetchDescription(propertyJson: Json): Option[Json] = (propertyJson.cursor --\"description").map(_.focus)
+  def fetchDescription(propertyJson: Json): Option[Json] = propertyJson.hcursor.downField("description").focus
 
   /** Exercise 2.2
     * Lets do the same, for agentName.
 
     */
 
-  def fetchAgentName(propertyJson: Json): String \/ Json = {
-    val agentNameCursor: ACursor = propertyJson.hcursor --\ "agent" --\ "agentName"
+  def fetchAgentName(propertyJson: Json): Either[String, Json] = {
+    val agentNameCursor: ACursor = propertyJson.hcursor downField  "agent" downField "agentName"
     agentNameCursor.focus match {
-      case None => -\/(s"Failed getting agent name : ${agentNameCursor}")
-      case Some(agentName) => \/-(agentName)
+      case None => Left(s"Failed getting agent name : ${agentNameCursor}")
+      case Some(agentName) => Right(agentName)
     }
   }
 
