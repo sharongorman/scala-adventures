@@ -14,7 +14,6 @@ resolvers ++= Seq(
 scalaVersion := "2.12.1"
 sbtVersion := "0.13.13"
 
-sbtVersion := "0.13.9"
 
 val specs2Version = "3.8.6"
 val circeVersion = "0.7.0"

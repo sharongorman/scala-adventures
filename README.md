@@ -7,10 +7,7 @@ Choose your adventure below
 
 ##Adventure 1 : Handling Errors with Monads
 The aim is:
-<<<<<<< HEAD
-=======
 
->>>>>>> cats
 1. Gain practice/confidence in handling errors.
 2. Gain practice weilding monads (all the exercises can be solved using generic monad or applicative functor methods!).
 
@@ -20,7 +17,7 @@ There are a series of tests that you need to make pass in ErrorExercisesSpec.
 Run them with `./sbt test`
 
 
-### Using scalaz disjunction to handle errors
+### Using scala either to handle errors
 
 We can represent the result of a function that may give us an error as "either an error or a result".
 We choose to use the scalaz "Disjunction" class to hold this result type.  
@@ -36,10 +33,7 @@ We then practice creating, combining and transforming our results.
 ##Adventure 2 : Encoding Json with Argonaut
 
 The aim is:
-<<<<<<< HEAD
-=======
 
->>>>>>> cats
 1. Gain practice/confidence in encoding using the argonaut library
 2. Gain an understanding of how argonaut is doing this.
 
