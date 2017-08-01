@@ -15,23 +15,24 @@ object CirceEncodingExercises {
     *
     * Once we have a Json instance, we can print it out to a string using the Json.noSpaces Json.spaces2 
     * For more control on the print format use a configured printer with the Json.pretty method
+    *
     * Encode a simple json string, using the Json.fromString method
     *
     */
 
-  def writeJsonString(value: String): String = Json.fromString(value).noSpaces
+  def writeJsonString(value: String): String = ???
 
   /** Exercise 2
     * Encode a simple boolean  Hint: use Json.fromBoolean method.
     */
-  def writeJsonBoolean(value: Boolean): String = Json.fromBoolean(value).noSpaces
+  def writeJsonBoolean(value: Boolean): String = ???
 
   /** Exercise 3
     * Encode an array of strings
     * This time use the Json.fromValues method, which takes a Iterable[Json]  (a List[_] is an Iterable[_]!)
     * Hint: use the methods explored above to convert the List[String] to List[Json].
     */
-  def writeJsonArray(values: List[String]): String = Json.fromValues(values.map(Json.fromString)).noSpaces
+  def writeJsonArray(values: List[String]): String = ???
 
   /** Exercise 4
     * Encode our first object
@@ -41,12 +42,7 @@ object CirceEncodingExercises {
     */
   case class Agent(surname: String, firstNames: List[String], principal: Boolean, agentId: Option[String] = None)
 
-  def writeAgent(agent: Agent): String =
-    Json.obj(
-      "surname" -> Json.fromString(agent.surname),
-      "firstNames" -> Json.fromValues(agent.firstNames.map(Json.fromString)),
-      "principal" -> Json.fromBoolean(agent.principal)
-    ).noSpaces
+  def writeAgent(agent: Agent): String = ???
 
   /** Introducing Encoders
     * This is getting a bit tedious.  Wouldn't it be nice if it could work out how to encode the field
@@ -65,12 +61,7 @@ object CirceEncodingExercises {
   /** Exercise 5
     * Rewrite agent encoding using the Encoder style
     */
-  def writeAgent2(agent: Agent): String =
-    Json.obj(
-      "surname" -> agent.surname.asJson,
-      "firstNames" -> agent.firstNames.asJson,
-      "principal" -> agent.principal.asJson
-    ).noSpaces
+  def writeAgent2(agent: Agent): String = ???
 
   /**
     * But I have a field that is an Option ... I only want to write it if it exists!
@@ -94,10 +85,10 @@ object CirceEncodingExercises {
       "principal" -> agent.principal.asJson
     )
 
-    val optionalFields: List[(String, Json)] = agent.agentId.toList.map("agentid" -> _.asJson)
+    val optionalFields: List[(String, Json)] = ???
 
     Json.obj(
-      (mandatoryFields ++ optionalFields): _*
+      ??? : _*
     ).noSpaces
 
   }
@@ -119,13 +110,7 @@ object CirceEncodingExercises {
 
   val printer = Printer.noSpaces.copy(dropNullKeys = true)
 
-  def writeAgent5(agent: Agent): String =
-    Json.obj(
-      "surname" -> agent.surname.asJson,
-      "firstNames" -> agent.firstNames.asJson,
-      "principal" -> agent.principal.asJson,
-      "agentid" -> agent.agentId.asJson
-    ).pretty(printer)
+  def writeAgent5(agent: Agent): String = ???
 
 
   /**
@@ -150,15 +135,11 @@ object CirceEncodingExercises {
 
 
   def writeProperty(property: Property): String = {
-    def encodeAgent(agent: Agent): Json = Json.obj(
-      "surname" -> agent.surname.asJson,
-      "firstNames" -> agent.firstNames.asJson,
-      "principal" -> agent.principal.asJson
-    )
+    def encodeAgent(agent: Agent): Json = ???
 
     Json.obj(
       "description" -> property.description.asJson,
-      "agent" -> encodeAgent(property.agent)
+      "agent" -> ???
     ).noSpaces
   }
 
@@ -185,22 +166,18 @@ object CirceEncodingExercises {
     */
 
   def writePropertyWithEncoder(property: Property): String = {
-    def encodeAgent(agent: Agent): Json = Json.obj(
-      "surname" -> agent.surname.asJson,
-      "firstNames" -> agent.firstNames.asJson,
-      "principal" -> agent.principal.asJson
-    )
+    def encodeAgent(agent: Agent): Json = ???
 
     /**
       * Note: since scala 2.11, a Single Abstract Method trait instance can be automatically created from a function
       * that matches the abstract method's signature.  So the below line can be further simplified to:
       * implicit def AgentEncoder: Encoder[Agent] = encodeAgent
       */
-    implicit def AgentEncoder: Encoder[Agent] = Encoder.instance(encodeAgent)
+    implicit def AgentEncoder: Encoder[Agent] = ???
 
     Json.obj(
       "description" -> property.description.asJson,
-      "agent" -> property.agent.asJson
+      "agent" -> ???
     ).noSpaces
   }
 
