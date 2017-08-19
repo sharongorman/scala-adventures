@@ -87,9 +87,7 @@ object CirceEncodingExercises {
 
     val optionalFields: List[(String, Json)] = ???
 
-    Json.obj(
-      ??? : _*
-    ).noSpaces
+    Json.obj( ??? ).noSpaces
 
   }
 
@@ -179,6 +177,7 @@ object CirceEncodingExercises {
       "description" -> property.description.asJson,
       "agent" -> ???
     ).noSpaces
+    ???
   }
 
 
