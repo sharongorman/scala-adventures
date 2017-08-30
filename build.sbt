@@ -7,8 +7,7 @@ version := "0.0.1"
 resolvers ++= Seq(
   "rea nexus release" at "http://nexus.delivery.realestate.com.au/nexus/content/repositories/releases",
   Resolver.url("scalasbt", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"))(Resolver.ivyStylePatterns),
-  "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/",
-  "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases")
+  "gphat" at "https://raw.github.com/gphat/mvn-repo/master/releases/")
 
 
 scalaVersion := "2.12.1"
