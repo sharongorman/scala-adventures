@@ -189,9 +189,9 @@ object ErrorExercises {
     * def makeSandwich(b: Bacon, l: Lettuce, t: Tomato): Sandwich = ...
     *
     * val optionalSandwich: Option[Sandwich] = 
-    *   Apply[Option].apply3(optionalBacon, optionalLettuce, optionalTomato)(makeSandwich)
+    *   Apply[Option].map3(optionalBacon, optionalLettuce, optionalTomato)(makeSandwich)
     *
-    * Try rewriting the suggestAProperty method above using an Apply[ErrorOr].applyXXX variant.
+    * Try rewriting the suggestAProperty method above using an Apply[ErrorOr].mapXXX variant.
     */
 
   def suggestAProperty2(propertyId: PropertyId, agentId: AgentId): ErrorOr[String] = ???
